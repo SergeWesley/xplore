@@ -43,3 +43,18 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+/.env
+
+# Flutter plugins
+.flutter-plugins
+
+# CocoaPods
+ios/Pods/
+macos/Pods/
+ios/.symlinks/
+macos/.symlinks/
+
+# Xcode generated
+**/DerivedData/
+**/xcuserdata/

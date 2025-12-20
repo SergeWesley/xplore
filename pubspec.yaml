@@ -1,19 +1,32 @@
-name: XPlore
+name: xplore
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
   sdk: ^3.9.2
 
 dependencies:
+  dio: ^5.9.0
+  iconsax: ^0.0.8
+  equatable: ^2.0.7
   flutter:
     sdk: flutter
+  flutter_bloc: ^9.1.1
+  flutter_dotenv: ^6.0.0
+  fpdart: ^1.2.0
+  get_it: ^9.1.1
+  json_annotation: ^4.9.0
+  webview_flutter: ^4.13.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  json_serializable: ^6.11.3
+  build_runner: ^2.10.4
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env
