@@ -3,6 +3,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/apod_cubit.dart';
 import '../cubit/apod_state.dart';
+import '../../../../core/widgets/app_drawer.dart';
 import '../widgets/apod_grid_tile.dart';
 
 class ApodPage extends StatefulWidget {
@@ -59,6 +60,7 @@ class _ApodPageState extends State<ApodPage> {
               ),
             ],
           ),
+          drawer: const AppDrawer(),
           body: switch (state) {
             ApodInitial() => _buildInitialState(),
             ApodLoading() => _buildLoadingState(),
