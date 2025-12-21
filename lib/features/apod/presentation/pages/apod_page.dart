@@ -60,7 +60,7 @@ class _ApodPageState extends State<ApodPage> {
               ),
             ],
           ),
-          drawer: const AppDrawer(),
+          drawer: const AppDrawer(currentRoute: 'apod'),
           body: switch (state) {
             ApodInitial() => _buildInitialState(),
             ApodLoading() => _buildLoadingState(),

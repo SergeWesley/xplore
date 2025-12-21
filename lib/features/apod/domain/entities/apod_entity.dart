@@ -1,9 +1,15 @@
-import 'package:equatable/equatable.dart';
+import 'package:isar/isar.dart';
 
-class ApodEntity extends Equatable {
+part 'apod_entity.g.dart';
+
+@collection
+class ApodEntity {
+  Id get isarId => fastHash(date);
+
   final String title;
   final String explanation;
   final String? url;
+  @Index(unique: true)
   final String date;
   final String? hdurl;
   final String mediaType;
@@ -20,13 +26,24 @@ class ApodEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [
-    title,
-    explanation,
-    url,
-    date,
-    hdurl,
-    mediaType,
-    copyright,
-  ];
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ApodEntity &&
+          runtimeType == other.runtimeType &&
+          date == other.date;
+
+  @override
+  int get hashCode => date.hashCode;
+}
+
+int fastHash(String string) {
+  var hash = 0xcbf29ce484222325;
+  for (var i = 0; i < string.length; i++) {
+    final codeUnit = string.codeUnitAt(i);
+    hash ^= codeUnit >> 8;
+    hash *= 0x100000001b3;
+    hash ^= codeUnit & 0xFF;
+    hash *= 0x100000001b3;
+  }
+  return hash;
 }

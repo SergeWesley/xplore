@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../core/utils/date_utils.dart';
 import '../../domain/entities/apod_entity.dart';
+import '../cubit/favorites_cubit.dart';
+import '../cubit/favorites_state.dart';
 import '../widgets/apod_image.dart';
 
 class ApodDetailPage extends StatelessWidget {
@@ -17,6 +20,24 @@ class ApodDetailPage extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
+            actions: [
+              BlocBuilder<FavoritesCubit, FavoritesState>(
+                builder: (context, state) {
+                  final isFav = context.read<FavoritesCubit>().isFavoriteSync(
+                    apod.date,
+                  );
+                  return IconButton(
+                    icon: Icon(
+                      isFav ? Iconsax.heart5 : Iconsax.heart,
+                      color: isFav ? Colors.red : null,
+                    ),
+                    onPressed: () {
+                      context.read<FavoritesCubit>().toggleFavorite(apod);
+                    },
+                  );
+                },
+              ),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               background: ApodImage(
                 url: apod.url,

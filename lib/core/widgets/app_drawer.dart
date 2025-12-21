@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../features/apod/presentation/pages/apod_page.dart';
+import '../../features/apod/presentation/pages/favorites_page.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({super.key});
+  final String currentRoute;
+
+  const AppDrawer({super.key, this.currentRoute = 'apod'});
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +49,31 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Iconsax.image),
             title: const Text('APOD'),
-            selected: true,
+            selected: currentRoute == 'apod',
             onTap: () {
               Navigator.pop(context);
+              if (currentRoute != 'apod') {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ApodPage()),
+                );
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Iconsax.heart),
+            title: const Text('Favoris'),
+            selected: currentRoute == 'favorites',
+            onTap: () {
+              Navigator.pop(context);
+              if (currentRoute != 'favorites') {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FavoritesPage(),
+                  ),
+                );
+              }
             },
           ),
         ],
