@@ -8,7 +8,7 @@ class ApodModel extends ApodEntity {
   const ApodModel({
     required super.title,
     required super.explanation,
-    required super.url,
+    super.url,
     required super.date,
     super.hdurl,
     required super.mediaType,

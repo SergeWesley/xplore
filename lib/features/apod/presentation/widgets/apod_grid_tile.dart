@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../../../core/utils/date_utils.dart';
 import '../../domain/entities/apod_entity.dart';
+import '../pages/apod_detail_page.dart';
+import 'apod_image.dart';
 
 class ApodGridTile extends StatelessWidget {
   final ApodEntity apod;
@@ -10,7 +13,16 @@ class ApodGridTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap:
+          onTap ??
+          () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ApodDetailPage(apod: apod),
+              ),
+            );
+          },
       child: Card(
         clipBehavior: Clip.antiAlias,
         elevation: 2,
@@ -18,7 +30,7 @@ class ApodGridTile extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            _buildImage(),
+            ApodImage(url: apod.url),
 
             Positioned(
               bottom: 0,
@@ -52,7 +64,7 @@ class ApodGridTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      _formatDate(apod.date),
+                      formatDateFrShort(apod.date),
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.8),
                         fontSize: 11,
@@ -66,58 +78,5 @@ class ApodGridTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildImage() {
-    return Image.network(
-      apod.url,
-      fit: BoxFit.cover,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return Container(
-          color: Colors.grey[200],
-          child: Center(
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              value: loadingProgress.expectedTotalBytes != null
-                  ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                  : null,
-            ),
-          ),
-        );
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return Container(
-          color: Colors.grey[300],
-          child: const Center(
-            child: Icon(Icons.broken_image, size: 32, color: Colors.grey),
-          ),
-        );
-      },
-    );
-  }
-
-  String _formatDate(String date) {
-    try {
-      final dateTime = DateTime.parse(date);
-      const months = [
-        'jan',
-        'fév',
-        'mar',
-        'avr',
-        'mai',
-        'juin',
-        'juil',
-        'août',
-        'sep',
-        'oct',
-        'nov',
-        'déc',
-      ];
-      return '${dateTime.day} ${months[dateTime.month - 1]} ${dateTime.year}';
-    } catch (e) {
-      return date;
-    }
   }
 }

@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class ApodEntity extends Equatable {
   final String title;
   final String explanation;
-  final String url;
+  final String? url;
   final String date;
   final String? hdurl;
   final String mediaType;
@@ -12,7 +12,7 @@ class ApodEntity extends Equatable {
   const ApodEntity({
     required this.title,
     required this.explanation,
-    required this.url,
+    this.url,
     required this.date,
     this.hdurl,
     required this.mediaType,

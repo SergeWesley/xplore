@@ -21,35 +21,45 @@ class _ApodPageState extends State<ApodPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Astronomy Picture of the Day'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Iconsax.gallery),
-            tooltip: "7 derniers jours",
-            onPressed: () {
-              context.read<ApodCubit>().fetchLastWeekApods();
-            },
+    return BlocBuilder<ApodCubit, ApodState>(
+      builder: (context, state) {
+        final isGalleryMode = state is ApodListLoaded;
+        final isSingleMode = state is ApodLoaded;
+        final primaryColor = Theme.of(context).colorScheme.primary;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Astronomy Picture of the Day'),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Iconsax.gallery,
+                  color: isGalleryMode ? primaryColor : null,
+                ),
+                tooltip: "7 derniers jours",
+                onPressed: () {
+                  context.read<ApodCubit>().fetchLastWeekApods();
+                },
+              ),
+              IconButton(
+                icon: Icon(
+                  Iconsax.calendar,
+                  color: isSingleMode ? primaryColor : null,
+                ),
+                tooltip: "Image du jour",
+                onPressed: () {
+                  context.read<ApodCubit>().fetchTodayApod();
+                },
+              ),
+              IconButton(
+                icon: const Icon(Iconsax.calendar_1),
+                tooltip: 'Choisir une date',
+                onPressed: () => _showDatePicker(context),
+              ),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Iconsax.calendar),
-            tooltip: "Image du jour",
-            onPressed: () {
-              context.read<ApodCubit>().fetchTodayApod();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Iconsax.calendar_1),
-            tooltip: 'Choisir une date',
-            onPressed: () => _showDatePicker(context),
-          ),
-        ],
-      ),
-      body: BlocBuilder<ApodCubit, ApodState>(
-        builder: (context, state) {
-          return switch (state) {
+          body: switch (state) {
             ApodInitial() => _buildInitialState(),
             ApodLoading() => _buildLoadingState(),
             ApodLoaded(:final apod) => _buildSingleApod(context, apod),
@@ -58,9 +68,9 @@ class _ApodPageState extends State<ApodPage> {
               apodList,
             ),
             ApodError(:final message) => _buildErrorState(context, message),
-          };
-        },
-      ),
+          },
+        );
+      },
     );
   }
 
