@@ -7,9 +7,21 @@ import '../cubit/neo_cubit.dart';
 import '../cubit/neo_state.dart';
 import '../widgets/asteroid_cloud.dart';
 
-/// Page des Near Earth Objects
-class NeoPage extends StatelessWidget {
+class NeoPage extends StatefulWidget {
   const NeoPage({super.key});
+
+  @override
+  State<NeoPage> createState() => _NeoPageState();
+}
+
+class _NeoPageState extends State<NeoPage> {
+  DateTimeRange? _selectedDateRange;
+
+  DateTimeRange get _currentDateRange {
+    final now = DateTime.now();
+    return _selectedDateRange ??
+        DateTimeRange(start: now.subtract(const Duration(days: 7)), end: now);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +47,10 @@ class NeoPage extends StatelessWidget {
             return switch (state) {
               NeoInitial() => const Center(child: Text('Initialisation...')),
               NeoLoading() => _buildLoading(),
-              NeoLoaded(:final feed) => AsteroidCloud(neos: feed.allNeos),
+              NeoLoaded(:final feed) => AsteroidCloud(
+                neos: feed.allNeos,
+                dateRange: _currentDateRange,
+              ),
               NeoError(:final message) => _buildError(context, message),
             };
           },
@@ -84,12 +99,9 @@ class NeoPage extends StatelessWidget {
     final now = DateTime.now();
     final picked = await showDateRangePicker(
       context: context,
-      firstDate: DateTime(2015),
+      firstDate: DateTime(1974),
       lastDate: now,
-      initialDateRange: DateTimeRange(
-        start: now.subtract(const Duration(days: 7)),
-        end: now,
-      ),
+      initialDateRange: _currentDateRange,
       helpText: 'Sélectionner une période',
       cancelText: 'Annuler',
       confirmText: 'OK',
@@ -110,6 +122,11 @@ class NeoPage extends StatelessWidget {
         ).showSnackBar(const SnackBar(content: Text('Maximum 7 jours')));
         return;
       }
+
+      setState(() {
+        _selectedDateRange = picked;
+      });
+
       context.read<NeoCubit>().fetchNeoFeed(
         startDate: _formatDate(picked.start),
         endDate: _formatDate(picked.end),

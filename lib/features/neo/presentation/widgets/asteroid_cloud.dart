@@ -6,8 +6,9 @@ import 'starfield_painter.dart';
 
 class AsteroidCloud extends StatefulWidget {
   final List<NeoEntity> neos;
+  final DateTimeRange? dateRange;
 
-  const AsteroidCloud({super.key, required this.neos});
+  const AsteroidCloud({super.key, required this.neos, this.dateRange});
 
   @override
   State<AsteroidCloud> createState() => _AsteroidCloudState();
@@ -59,6 +60,7 @@ class _AsteroidCloudState extends State<AsteroidCloud> {
                 child: _CloudLegend(
                   neos: widget.neos,
                   availableWidth: constraints.maxWidth,
+                  dateRange: widget.dateRange,
                 ),
               ),
               ..._positionedNeos!.map(
@@ -95,8 +97,13 @@ class _AsteroidCloudState extends State<AsteroidCloud> {
 class _CloudLegend extends StatelessWidget {
   final List<NeoEntity> neos;
   final double availableWidth;
+  final DateTimeRange? dateRange;
 
-  const _CloudLegend({required this.neos, required this.availableWidth});
+  const _CloudLegend({
+    required this.neos,
+    required this.availableWidth,
+    this.dateRange,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -109,52 +116,73 @@ class _CloudLegend extends StatelessWidget {
         color: Colors.black54,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Wrap(
-        spacing: 16,
-        runSpacing: 8,
-        alignment: WrapAlignment.spaceBetween,
-        crossAxisAlignment: WrapCrossAlignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '${neos.length} objets',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+          if (dateRange != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text(
+                _formatDateRange(dateRange!),
+                style: Theme.of(
+                  context,
+                ).textTheme.labelSmall?.copyWith(color: Colors.white70),
               ),
-              if (hazardousCount > 0) ...[
-                const SizedBox(width: 12),
-                Container(
-                  width: 10,
-                  height: 10,
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
+            ),
+          Wrap(
+            spacing: 16,
+            runSpacing: 8,
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${neos.length} objets',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 6),
+                  if (hazardousCount > 0) ...[
+                    const SizedBox(width: 12),
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '$hazardousCount dangereux',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.labelMedium?.copyWith(color: Colors.red),
+                    ),
+                  ],
+                ],
+              ),
+              if (!isSmallScreen)
                 Text(
-                  '$hazardousCount dangereux',
+                  'Appuyez sur un astéroïde',
                   style: Theme.of(
                     context,
-                  ).textTheme.labelMedium?.copyWith(color: Colors.red),
+                  ).textTheme.labelSmall?.copyWith(color: Colors.white54),
                 ),
-              ],
             ],
           ),
-          if (!isSmallScreen)
-            Text(
-              'Appuyez sur un astéroïde',
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: Colors.white54),
-            ),
         ],
       ),
     );
+  }
+
+  String _formatDateRange(DateTimeRange range) {
+    final start = range.start;
+    final end = range.end;
+    return '${start.day}/${start.month}/${start.year} - ${end.day}/${end.month}/${end.year}';
   }
 }
 
