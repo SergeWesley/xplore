@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../features/apod/presentation/pages/apod_page.dart';
 import '../../features/apod/presentation/pages/favorites_page.dart';
+import '../../features/neo/presentation/pages/neo_page.dart';
 
 class AppDrawer extends StatelessWidget {
   final String currentRoute;
@@ -49,6 +50,7 @@ class AppDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Iconsax.image),
             title: const Text('APOD'),
+            subtitle: const Text('Image astronomique du jour'),
             selected: currentRoute == 'apod',
             onTap: () {
               Navigator.pop(context);
@@ -60,6 +62,22 @@ class AppDrawer extends StatelessWidget {
               }
             },
           ),
+          ListTile(
+            leading: const Icon(Iconsax.global),
+            title: const Text('NEO'),
+            subtitle: const Text('Objets proches de la Terre'),
+            selected: currentRoute == 'neo',
+            onTap: () {
+              Navigator.pop(context);
+              if (currentRoute != 'neo') {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const NeoPage()),
+                );
+              }
+            },
+          ),
+          const Divider(),
           ListTile(
             leading: const Icon(Iconsax.heart),
             title: const Text('Favoris'),

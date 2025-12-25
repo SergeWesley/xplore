@@ -18,6 +18,13 @@ import 'features/apod/domain/usecases/remove_favorite.dart';
 import 'features/apod/presentation/cubit/apod_cubit.dart';
 import 'features/apod/presentation/cubit/favorites_cubit.dart';
 
+// NEO Feature
+import 'features/neo/data/datasources/neo_remote_datasource.dart';
+import 'features/neo/data/repositories/neo_repository_impl.dart';
+import 'features/neo/domain/repositories/neo_repository.dart';
+import 'features/neo/domain/usecases/get_neo_feed.dart';
+import 'features/neo/presentation/cubit/neo_cubit.dart';
+
 final getIt = GetIt.instance;
 
 Future<void> initDependencies(Isar isar) async {
@@ -58,4 +65,17 @@ Future<void> initDependencies(Isar isar) async {
       isFavorite: getIt(),
     ),
   );
+
+  // === NEO Feature ===
+  getIt.registerLazySingleton<NeoRemoteDataSource>(
+    () => NeoRemoteDataSourceImpl(dioClient: getIt()),
+  );
+
+  getIt.registerLazySingleton<NeoRepository>(
+    () => NeoRepositoryImpl(remoteDataSource: getIt()),
+  );
+
+  getIt.registerLazySingleton(() => GetNeoFeed(getIt()));
+
+  getIt.registerFactory(() => NeoCubit(getNeoFeed: getIt()));
 }
